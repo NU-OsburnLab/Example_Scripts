@@ -3,8 +3,8 @@
 #SBATCH -p normal           				  						 
 #SBATCH -t 48:00:00            				      						
 #SBATCH --mem=32G
-#SBATCH --ntasks-per-node=2
-#SBATCH --mail-user=mselensky@u.northwestern.edu  						 
+#SBATCH -n 2
+#SBATCH --mail-user=email@northwestern.edu # change to your email
 #SBATCH --mail-type=END     					  					 
 #SBATCH --job-name="q2-dada2"
 #SBATCH --output=%j-%x.out 
@@ -13,9 +13,13 @@ module purge all
 module load python-miniconda3
 source activate /projects/p31618/software/qiime2-2022.2
 
-cd data-directory
+cd data-directory # change to your data directory
 OUT_DR=`pwd`/qiime2-out
 mkdir -p $OUT_DR
+
+echo "[`date`] Denoising and assigning ASVs with DADA2..."
+
+qiime --version
 
 # denoise
 qiime dada2 denoise-paired \

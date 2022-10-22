@@ -1,10 +1,9 @@
 #!/bin/bash
-
 #SBATCH -A p31618               				  						
 #SBATCH -p normal           				  						 
-#SBATCH -t 48:00:00            				      						
+#SBATCH -t 48:00:00
+#SBATCH --mem=48G            				      						
 #SBATCH -n 4
-#SBATCH --mem=48G
 #SBATCH --mail-user=email@northwestern.edu # change to your email
 #SBATCH --mail-type=END     					  						 
 #SBATCH --job-name="import_demux_cutadapt"
@@ -15,14 +14,27 @@ module load python-miniconda3
 source activate /projects/p31618/software/qiime2-2022.2
 
 cd data-directory # change to your data directory
-OUT_DR=qiime2-out
+OUT_DR=`pwd`/qiime2-out
 mkdir -p $OUT_DR
 
-import seqs as qza
+echo "[`date`] Copying fastq files into ${OUT_DR}/muxed-pe-barcode-in-seq ..."
+
+# save fastq files into correct naming format for importing into qiime2
+mkdir -p muxed-pe-barcode-in-seq
+cp *R1_001.fastq muxed-pe-barcode-in-seq/forward.fastq
+cp *R2_001.fastq muxed-pe-barcode-in-seq/reverse.fastq
+
+echo "[`date`] Importing data into qiime2 ..."
+
+qiime --version
+
+# import seqs as qza
 qiime tools import \
  --type MultiplexedPairedEndBarcodeInSequence \
  --input-path muxed-pe-barcode-in-seq \
  --output-path ${OUT_DR}/multiplexed-seqs.qza
+
+echo "[`date`] Demultiplexing paired-end reads ..."
 
 # demultiplex
 qiime cutadapt demux-paired \
@@ -36,7 +48,9 @@ qiime demux summarize \
   --i-data ${OUT_DR}/demux.qza \
   --o-visualization ${OUT_DR}/demux.qzv
 
-# trim forward and reverse primers
+echo "[`date`] Trimming primer sequences from demultiplexed paired-end reads ..."
+
+# trim forward and reverse primers (515FY/806R Parada primers)
 qiime cutadapt trim-paired \
   --i-demultiplexed-sequences ${OUT_DR}/demux.qza \
   --p-front-f CCGTAAAACGACGGCCAGCCGTGYCAGCMGCCGCGGTAA \

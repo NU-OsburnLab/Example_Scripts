@@ -6,7 +6,7 @@
 #SBATCH -n 4
 #SBATCH --mail-user=email@northwestern.edu # change to your email
 #SBATCH --mail-type=END				 
-#SBATCH --job-name="taxonomy-assignment-phylogenetic-tree"
+#SBATCH --job-name="taxonomy-phylogenetic-tree"
 #SBATCH --output=%j-%x.out 
 
 module purge all
@@ -17,9 +17,9 @@ cd data-directory # change to your data directory
 OUT_DR=`pwd`/qiime2-out
 mkdir -p $OUT_DR
 
-qiime --version
+echo "[`date`] Assigning taxonomy ..."
 
-printf "\n | [`date`] Assigning taxonomy...\n"
+qiime --version
 
 # assign taxonomy with pre-trained Silva 138 classifier
 SECONDS=0
@@ -34,7 +34,7 @@ qiime metadata tabulate \
   --m-input-file $OUT_DR/taxonomy-Silva138.qza \
   --o-visualization $OUT_DR/taxonomy-Silva138.qzv
 
-printf "\n | [`date`] Building phylogenetic tree...\n"
+echo "[`date`] Building phylogenetic tree ..."
 
 # build phylogenetic tree
 SECONDS=0
@@ -47,8 +47,7 @@ qiime phylogeny align-to-tree-mafft-fasttree \
   --p-n-threads $SLURM_NTASKS
 tree_time=$SECONDS
 
-printf "\n | [`date`] Building alpha rarefaction plots...\n"
-
+echo "[`date`] Building alpha rarefaction plots ..."
 
 # build alpha rarefaction plots
 qiime diversity alpha-rarefaction \
@@ -58,7 +57,7 @@ qiime diversity alpha-rarefaction \
 	--m-metadata-file Jul22_nuseq_metadata.tsv \
 	--o-visualization $OUT_DR/alpha-rare.qzv
 
-printf "\n | [`date`] Collapsing taxa tables...\n"
+echo "[`date`] Collapsing taxa tables ..."
 
 # collapse ASV tables
 mkdir -p $OUT_DR/collapsed-tables
@@ -69,6 +68,8 @@ qiime taxa collapse \
   --p-level $i \
   --o-collapsed-table $OUT_DR/collapsed-tables/l$i-table.qza
 done 
+
+echo "[`date`] Visualizing taxa barplot ..."
 
 # make taxa barplot
 qiime taxa barplot \
