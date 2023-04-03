@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH -A p31618               				  						
-#SBATCH -p normal           				  						 
+#SBATCH -A p31618                                     
+#SBATCH -p normal                                  
 #SBATCH -t 48:00:00
-#SBATCH --mem=48G            				      						
+#SBATCH --mem=48G                                     
 #SBATCH -n 4
-#SBATCH --mail-user=email@northwestern.edu # change to your email
-#SBATCH --mail-type=END     					  						 
+#SBATCH --mail-user=mselensky@u.northwestern.edu # change to your email
+#SBATCH --mail-type=END                              
 #SBATCH --job-name="import_demux_cutadapt"
 #SBATCH --output=%j-%x.out     
 
@@ -19,10 +19,11 @@ mkdir -p $OUT_DR
 
 echo "[`date`] Copying fastq files into ${OUT_DR}/muxed-pe-barcode-in-seq ..."
 
-# save fastq files into correct naming format for importing into qiime2
+# gzip fastq files into correct naming format for importing into qiime2
 mkdir -p muxed-pe-barcode-in-seq
-cp *R1_001.fastq muxed-pe-barcode-in-seq/forward.fastq
-cp *R2_001.fastq muxed-pe-barcode-in-seq/reverse.fastq
+gzip *.fastq
+mv *R1_001.fastq.gz muxed-pe-barcode-in-seq/forward.fastq.gz
+mv *R2_001.fastq.gz muxed-pe-barcode-in-seq/reverse.fastq.gz
 
 echo "[`date`] Importing data into qiime2 ..."
 

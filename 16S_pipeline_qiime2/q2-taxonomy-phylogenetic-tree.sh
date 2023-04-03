@@ -23,7 +23,7 @@ qiime --version
 
 # assign taxonomy with pre-trained Silva 138 classifier
 SECONDS=0
-qiime feature-classifier classify-sklearn  \
+Ct  \
   --i-classifier /projects/p31618/databases/silva138/515FY-926R_16S/silva-138-99-515FY-926R-classifier.qza \
   --i-reads ${OUT_DR}/rep-seqs-nu.qza \
   --p-n-jobs $SLURM_NTASKS \
