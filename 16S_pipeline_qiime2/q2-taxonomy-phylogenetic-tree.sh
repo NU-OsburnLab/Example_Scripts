@@ -4,6 +4,7 @@
 #SBATCH -t 48:00:00
 #SBATCH --mem=48G
 #SBATCH -n 4
+#SBATCH -N 1
 #SBATCH --mail-user=email@northwestern.edu # change to your email
 #SBATCH --mail-type=END				 
 #SBATCH --job-name="taxonomy-phylogenetic-tree"
