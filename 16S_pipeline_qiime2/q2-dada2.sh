@@ -15,7 +15,7 @@ module load python-miniconda3
 source activate /projects/p31618/software/qiime2-2022.2
 
 cd data-directory # change to your data directory
-OUT_DR=`pwd`/qiime2-out
+OUT_DR=`pwd`/qiime2-out-my_project # uniquely named output folder (same as q2-import-demux-cutadapt.sh)
 mkdir -p $OUT_DR
 
 echo "[`date`] Denoising and assigning ASVs with DADA2..."

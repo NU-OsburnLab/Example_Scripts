@@ -15,16 +15,18 @@ module load python-miniconda3
 source activate /projects/p31618/software/qiime2-2022.2
 
 cd data-directory # change to your data directory
-OUT_DR=`pwd`/qiime2-out
+OUT_DR=`pwd`/qiime2-out-my_project # make a uniquely named output folder
 mkdir -p $OUT_DR
 
 echo "[`date`] Copying fastq files into ${OUT_DR}/muxed-pe-barcode-in-seq ..."
 
 # gzip fastq files into correct naming format for importing into qiime2
-mkdir -p muxed-pe-barcode-in-seq
-gzip *.fastq
-mv *R1_001.fastq.gz muxed-pe-barcode-in-seq/forward.fastq.gz
-mv *R2_001.fastq.gz muxed-pe-barcode-in-seq/reverse.fastq.gz
+mkdir -p $OUT_DR/muxed-pe-barcode-in-seq
+#gzip *.fastq
+cp *R1_001.fastq.gz $OUT_DR/muxed-pe-barcode-in-seq
+mv $OUT_DR/muxed-pe-barcode-in-seq/*R1_001.fastq.gz $OUT_DR/muxed-pe-barcode-in-seq/forward.fastq.gz
+cp *R2_001.fastq.gz $OUT_DR/muxed-pe-barcode-in-seq/reverse.fastq.gz
+mv $OUT_DR/muxed-pe-barcode-in-seq/*R2_001.fastq.gz $OUT_DR/muxed-pe-barcode-in-seq/reverse.fastq.gz
 
 echo "[`date`] Importing data into qiime2 ..."
 
@@ -33,7 +35,7 @@ qiime --version
 # import seqs as qza
 qiime tools import \
  --type MultiplexedPairedEndBarcodeInSequence \
- --input-path muxed-pe-barcode-in-seq \
+ --input-path ${OUT_DR}/muxed-pe-barcode-in-seq \
  --output-path ${OUT_DR}/multiplexed-seqs.qza
 
 echo "[`date`] Demultiplexing paired-end reads ..."
@@ -41,7 +43,7 @@ echo "[`date`] Demultiplexing paired-end reads ..."
 # demultiplex
 qiime cutadapt demux-paired \
   --i-seqs ${OUT_DR}/multiplexed-seqs.qza \
-  --m-forward-barcodes-file metadata.tsv \
+  --m-forward-barcodes-file metadata.tsv \ # rename to your metadata file
   --m-forward-barcodes-column barcode \
   --o-per-sample-sequences ${OUT_DR}/demux.qza \
   --o-untrimmed-sequences ${OUT_DR}/untrimmed.qza 
