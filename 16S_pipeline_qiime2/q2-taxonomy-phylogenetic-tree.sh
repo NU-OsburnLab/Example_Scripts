@@ -16,6 +16,7 @@ source activate /projects/p31618/software/qiime2-2022.2
 
 cd data-directory # change to your data directory
 OUT_DR=`pwd`/qiime2-out-my_project # uniquely named output folder (same as q2-import-demux-cutadapt.sh)
+META_DATA=metadata.tsv # full path to metadata file
 mkdir -p $OUT_DR
 
 echo "[`date`] Assigning taxonomy ..."
@@ -55,7 +56,7 @@ qiime diversity alpha-rarefaction \
 	--i-table asv-table-nu.qza \
 	--i-phylogeny $OUT_DR/rooted-tree.qza \
 	--p-max-depth 50000 \
-	--m-metadata-file Jul22_nuseq_metadata.tsv \
+	--m-metadata-file $META_DATA \
 	--o-visualization $OUT_DR/alpha-rare.qzv
 
 echo "[`date`] Collapsing taxa tables ..."
@@ -74,7 +75,7 @@ echo "[`date`] Visualizing taxa barplot ..."
 
 # make taxa barplot
 qiime taxa barplot \
-  --i-table asv-table-nu.qza \
+  --i-table $OUT_DR/asv-table-nu.qza \
   --i-taxonomy $OUT_DR/taxonomy-Silva138.qza \
-  --m-metadata-file metadata.tsv \
+  --m-metadata-file $META_DATA \
   --o-visualization $OUT_DR/taxa_barplot.qzv

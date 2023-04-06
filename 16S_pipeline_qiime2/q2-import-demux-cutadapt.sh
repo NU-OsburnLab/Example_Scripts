@@ -16,6 +16,7 @@ source activate /projects/p31618/software/qiime2-2022.2
 
 cd data-directory # change to your data directory
 OUT_DR=`pwd`/qiime2-out-my_project # make a uniquely named output folder
+META_DATA=metadata.tsv # full path to metadata file
 mkdir -p $OUT_DR
 
 echo "[`date`] Copying fastq files into ${OUT_DR}/muxed-pe-barcode-in-seq ..."
@@ -43,7 +44,7 @@ echo "[`date`] Demultiplexing paired-end reads ..."
 # demultiplex
 qiime cutadapt demux-paired \
   --i-seqs ${OUT_DR}/multiplexed-seqs.qza \
-  --m-forward-barcodes-file metadata.tsv \ # rename to your metadata file
+  --m-forward-barcodes-file ${META_DATA} \
   --m-forward-barcodes-column barcode \
   --o-per-sample-sequences ${OUT_DR}/demux.qza \
   --o-untrimmed-sequences ${OUT_DR}/untrimmed.qza 
