@@ -27,22 +27,22 @@ Once you get the metagenome list sorted, be sure to also modify your working dir
 #### Running the pipeline
 To run the pipeline, submit appropriately modified versions of these scripts in the following order:
 
-1. *`1_trimmomatic.sh`*: Removes common adapters (listed in `/projects/p31618/databases/adapters.fa`) from raw input fastqs prior to assembly.
+1. *`1_trimmomatic.sh`*: Removes common adapters (listed in `/projects/p31618/databases/adapters.fa`) from raw input fastqs prior to assembly using [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic).
 2. *`2_spades.sh`*: Assembles metagenomic reads into contigs and scaffolds using [SPAdes](https://github.com/ablab/spades). 
-3. *`3_metabat2.sh`*: Bins MAGs across a range of minimum scaffold lengths. Do NOT modify the `--array` parameter here. I broadly check average MAG quality between each scaffold length iteration with `checkm.sh` and go with the best one for `bin_refinement.sh`. After scripts 4 and 5 complete, copy the fasta files from the best metabat2 MAG set iteration to `${initial_bins}/metabat2_bins`, where `${initial_bins}` is a variable defined in the script. 
-4. *`4_concoct.sh`*: Bins MAGs with CONCOCT via metaWRAP.
-5. *`5_maxbin2.sh`*: Bins MAGs with maxbin2 via metaWRAP. Ensure the same output directory as script 4.
+3. *`3_metabat2.sh`*: Bins MAGs with [metabat2](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6662567/) across a range of minimum scaffold lengths. Do NOT modify the `--array` parameter here. I broadly check average MAG quality between each scaffold length iteration with `checkm.sh` and go with the best one for `bin_refinement.sh`. After scripts 4 and 5 complete, copy the fasta files from the best metabat2 MAG set iteration to `${initial_bins}/metabat2_bins`, where `${initial_bins}` is a variable defined in the script. 
+4. *`4_concoct.sh`*: Bins MAGs with CONCOCT via [metaWRAP](https://github.com/bxlab/metaWRAP/tree/master).
+5. *`5_maxbin2.sh`*: Bins MAGs with maxbin2 via [metaWRAP](https://github.com/bxlab/metaWRAP/tree/master). Ensure the same output directory as script 4.
 
 MAG sets from scripts 3-5 will be saved to subfolders within the `metaWRAP-initial-bins` output directory. Script 6 calls metaWRAP to consolidate the bin sets into a single consensus set:
 
-6. *`6_bin_refinement.sh`*: Creates a set of consensus MAGs from outputs of scripts 3-5. By default, the cutoff for both MAG completeness and contamination (as assessed via CheckM) is `50`. 
-7. *`7_reassemble_MAGs.sh`*: Reassembles MAGs against metagenomic reads in an attempt to increase bin quality. By default, the cutoff for both MAG completeness and contamination (as assessed via CheckM) is `30`. 
-8. *`8_drep.sh`*: Dereplicates reassembled MAG sets with the software drep.
-9. *`9_quant_bins.sh`*: Quantifies *nonreassembled* MAG abundance (in bin copies per million metagenomic reads).
-10. *`10_METABOLIC_MAGs.sh`*: Annotates functional genes from reassembled MAG set with the METABOLIC software. To prevent overfilling project allocation space from large intermediate files, the output is saved to the `/scratch/$USER/metabolic_c-mags` directory.
-11. *`11_METABOLIC_assemblies.sh`*: Annotates functional genes from metagenomic assemblies with the METABOLIC software. To prevent overfilling project allocation space from large intermediate files, the output is saved to the `/scratch/$USER/metabolic_c-assemblies` directory.
-12. *`12_checkm.sh`*: Assesses MAG quality; returns completion and contamination estimates for each MAG.
-13. *`13_gtdbtk.sh`*: Taxonomically classifies MAGs according to Genome Taxonomy Database (GTDB) `classify_wf` workflow.
+6. *`6_bin_refinement.sh`*: Creates a set of consensus MAGs from outputs of scripts 3-5. By default, the cutoff for both MAG completeness and contamination (as assessed via CheckM) is `50`. Performed with [metaWRAP](https://github.com/bxlab/metaWRAP/tree/master). 
+7. *`7_reassemble_MAGs.sh`*: Reassembles MAGs against metagenomic reads in an attempt to increase bin quality. By default, the cutoff for both MAG completeness and contamination (as assessed via CheckM) is `30`. Performed with [metaWRAP](https://github.com/bxlab/metaWRAP/tree/master). 
+8. *`8_drep.sh`*: Dereplicates reassembled MAG sets with the software [drep](https://drep.readthedocs.io/en/latest/overview.html).
+9. *`9_quant_bins.sh`*: Quantifies *nonreassembled* MAG abundance (in bin copies per million metagenomic reads). The `quant_bins` module from [metaWRAP](https://github.com/bxlab/metaWRAP/tree/master) calls [Salmon](https://combine-lab.github.io/salmon/) to estimate MAG abundance.
+10. *`10_METABOLIC_MAGs.sh`*: Annotates functional genes from reassembled MAG set with the [METABOLIC](https://github.com/AnantharamanLab/METABOLIC/wiki/) software. To prevent overfilling project allocation space from large intermediate files, the output is saved to the `/scratch/$USER/metabolic_c-mags` directory.
+11. *`11_METABOLIC_assemblies.sh`*: Annotates functional genes from metagenomic assemblies with the [METABOLIC](https://github.com/AnantharamanLab/METABOLIC/wiki/) software. To prevent overfilling project allocation space from large intermediate files, the output is saved to the `/scratch/$USER/metabolic_c-assemblies` directory.
+12. *`12_checkm.sh`*: Assesses MAG quality with [CheckM](https://ecogenomics.github.io/CheckM/); returns completion and contamination estimates for each MAG.
+13. *`13_gtdbtk.sh`*: Taxonomically classifies MAGs according to Genome Taxonomy Database (GTDB) [`classify_wf`](https://ecogenomics.github.io/GTDBTk/commands/classify_wf.html) workflow.
 
 
 
