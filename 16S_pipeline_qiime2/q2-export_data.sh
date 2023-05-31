@@ -34,6 +34,11 @@ biom convert \
   -o ${OUT_DR}/feature_tables/feature-table-from-biom.txt \
   --to-tsv
 
+# export taxonomies
+qiime tools export \
+  --input-path ${OUT_DR}/taxonomy-Silva138.qza \
+  --output-path ${OUT_DR}/feature_tables/
+
 # export demultiplexed fastqs
 mkdir -p fastqs
 qiime tools export \

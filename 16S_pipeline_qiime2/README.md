@@ -2,7 +2,7 @@
 
 By [**Matt Selensky**](https://mselensky.github.io/)
 
-*30 May 2023*
+*31 May 2023*
 
 This document demonstrates an example workflow to process 16S rRNA gene data from multiplexed paired-end FASTQ files using Northwestern's high-performance computing cluster, [Quest](https://services.northwestern.edu/TDClient/30/Portal/KB/ArticleDet?ID=1542). Before you proceed, make sure you are familiar with the basics of using Quest have access to the Osburn Lab group Allocation I ([`p31618`](https://app.smartsheet.com/b/form/797775d810274db5889b5199c4260328))! 
 
@@ -59,5 +59,5 @@ Once the appropriate modifications are made to this script, submit a job to Ques
 
 This script exports useful files from Qiime2 (ending with *.qza*) to those with more common extensions for downstream purposes:
 
-10. Exports biom-/txt-formatted feature tables and fasta-formatted representative sequences to the `feature_tables` output subfolder. 
+10. Exports biom-/txt-formatted feature tables, taxonomies, and fasta-formatted representative sequences to the `feature_tables` output subfolder. 
 11. Exports demultiplexed forward and reverse FASTQ files to the `fastqs` output subfolder.
